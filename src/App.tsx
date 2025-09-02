@@ -14,8 +14,31 @@ const fakeData: Ilist[] = [
   { startedAt: date, finishedAt: null, description: "Code review", location: "Home Office" }
 ]
 
+const getStoredTasks = (): Ilist[] => {
+  if (!localStorage.list) return fakeData;
+  
+  try {
+    const storedData = JSON.parse(localStorage.list);
+    return storedData.map((item: Ilist) => ({
+      ...item,
+      startedAt: item.startedAt ? new Date(item.startedAt) : null,
+      finishedAt: item.finishedAt ? new Date(item.finishedAt) : null
+    }));
+  } catch (error) {
+    console.error('Error parsing stored data:', error);
+    return fakeData;
+  }
+};
+
+const defaultTasks: Ilist[] = getStoredTasks();
+
 function App() {
-  const [list, setList] = useState<Ilist[]>([])
+  const [list, setList] = useState<Ilist[]>(defaultTasks)
+
+  useEffect(()=>{
+    localStorage.setItem('list', JSON.stringify(list));
+  },
+  [list])
 
   const formatDate = (date: Date | null): string => {
     if (!date) return '-'
@@ -59,9 +82,6 @@ function App() {
     )
   }
 
-  useEffect(() => {
-    setList(fakeData)
-  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
@@ -78,6 +98,13 @@ function App() {
           >
             <span>+</span>
             <span>Start New Activity</span>
+          </button>
+
+          <button 
+            onClick={()=>setList([])}
+            className='bg-red-500 p-4 rounded-2xl font-bold  hover:bg-red-600 text-black shadow-md hover:shadow-lg transform hover:-translate-y-0.5'
+          >
+            <span>Clear activities</span>
           </button>
         </div>
 

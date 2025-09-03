@@ -43,13 +43,10 @@ function App() {
   const formatDate = (date: Date | null): string => {
     if (!date) return '-'
     
-    const day = date.getDate().toString().padStart(2, '0')
-    const month = date.toLocaleString('en', { month: 'short' })
-    const year = date.getFullYear().toString().slice(-2)
     const hours = date.getHours().toString().padStart(2, '0')
     const minutes = date.getMinutes().toString().padStart(2, '0')
     
-    return `${day}/${month}/${year} ${hours}:${minutes}`
+    return `${hours}:${minutes}`
   }
 
   function startNewActivity() {
@@ -82,6 +79,15 @@ function App() {
     )
   }
 
+  const calculateDuration = (start: Date | null, end: Date | null): string => {
+  if (!start || !end) return '-';
+  
+  const durationMs = end.getTime() - start.getTime();
+  const durationMinutes = Math.round(durationMs / 60000);
+  
+  return `${durationMinutes} min`;
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
@@ -89,10 +95,12 @@ function App() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-800">Activity Tracker</h2>
+            <h2 className="text-3xl font-bold text-gray-800">
+              Activity Tracker
+            </h2>
             <p className="text-gray-600 mt-1">Manage your daily activities</p>
           </div>
-          <button 
+          <button
             onClick={startNewActivity}
             className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 flex items-center space-x-2"
           >
@@ -100,9 +108,9 @@ function App() {
             <span>Start New Activity</span>
           </button>
 
-          <button 
-            onClick={()=>setList([])}
-            className='bg-red-500 p-4 rounded-2xl font-bold  hover:bg-red-600 text-black shadow-md hover:shadow-lg transform hover:-translate-y-0.5'
+          <button
+            onClick={() => setList([])}
+            className="bg-red-500 p-4 rounded-2xl font-bold  hover:bg-red-600 text-black shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
           >
             <span>Clear activities</span>
           </button>
@@ -123,28 +131,31 @@ function App() {
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     Actions
                   </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     Started At
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     Finished At
                   </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Duration
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {list.map((item, i) => (
-                  <tr 
-                    key={i} 
+                  <tr
+                    key={i}
                     className={`transition-colors duration-150 ${
-                      item.finishedAt 
-                        ? 'bg-green-50 hover:bg-green-100' 
+                      item.finishedAt
+                        ? 'bg-green-50 hover:bg-green-100'
                         : 'bg-white hover:bg-gray-50'
                     }`}
                   >
                     <td className="px-6 py-4">
-                      <input 
-                        type="text" 
-                        value={item.location} 
+                      <input
+                        type="text"
+                        value={item.location}
                         onChange={(e) => updateLocation(i, e.target.value)}
                         onBlur={(e) => updateLocation(i, e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
@@ -152,9 +163,9 @@ function App() {
                       />
                     </td>
                     <td className="px-6 py-4">
-                      <input 
-                        type="text" 
-                        value={item.description} 
+                      <input
+                        type="text"
+                        value={item.description}
                         onChange={(e) => updateDescription(i, e.target.value)}
                         onBlur={(e) => updateDescription(i, e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
@@ -162,7 +173,7 @@ function App() {
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <button 
+                      <button
                         onClick={() => stopActivity(i)}
                         disabled={!!item.finishedAt}
                         className={`px-4 py-2 rounded-md font-medium transition-all duration-200 ${
@@ -174,16 +185,27 @@ function App() {
                         {item.finishedAt ? 'Completed' : 'Stop Activity'}
                       </button>
                     </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-sm font-medium text-gray-900">
                         {formatDate(item.startedAt)}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`text-sm font-medium ${
-                        item.finishedAt ? 'text-green-600' : 'text-gray-400'
-                      }`}>
+                      <span
+                        className={`text-sm font-medium ${
+                          item.finishedAt ? 'text-green-600' : 'text-gray-400'
+                        }`}
+                      >
                         {formatDate(item.finishedAt)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`text-sm font-medium ${
+                          item.finishedAt ? 'text-green-600' : 'text-gray-400'
+                        }`}
+                      >
+                        {calculateDuration(item.startedAt, item.finishedAt)}
                       </span>
                     </td>
                   </tr>
@@ -196,12 +218,26 @@ function App() {
           {list.length === 0 && (
             <div className="text-center py-12">
               <div className="text-gray-400 mb-4">
-                <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-16 h-16 mx-auto"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-600">No activities yet</h3>
-              <p className="text-gray-500 mt-1">Start your first activity to begin tracking!</p>
+              <h3 className="text-lg font-medium text-gray-600">
+                No activities yet
+              </h3>
+              <p className="text-gray-500 mt-1">
+                Start your first activity to begin tracking!
+              </p>
             </div>
           )}
         </div>
@@ -209,25 +245,34 @@ function App() {
         {/* Stats Footer */}
         <div className="mt-6 grid grid-cols-3 gap-4">
           <div className="bg-white rounded-lg p-4 shadow-md">
-            <div className="text-2xl font-bold text-blue-600">{list.length}</div>
+            <div className="text-2xl font-bold text-blue-600">
+              {list.length}
+            </div>
             <div className="text-sm text-gray-600">Total Activities</div>
           </div>
           <div className="bg-white rounded-lg p-4 shadow-md">
             <div className="text-2xl font-bold text-green-600">
-              {list.filter(item => item.finishedAt).length}
+              {list.filter((item) => item.finishedAt).length}
             </div>
             <div className="text-sm text-gray-600">Completed</div>
           </div>
           <div className="bg-white rounded-lg p-4 shadow-md">
             <div className="text-2xl font-bold text-orange-600">
-              {list.filter(item => !item.finishedAt).length}
+              {list.filter((item) => !item.finishedAt).length}
             </div>
             <div className="text-sm text-gray-600">In Progress</div>
           </div>
         </div>
+
+        {/* Span resume */}
+        <div className="bg-black my-4 rounded-2xl p-4">
+          <pre className="bg-black text-white">
+            {JSON.stringify(list, null, 2)}
+          </pre>
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default App

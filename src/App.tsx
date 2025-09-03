@@ -158,19 +158,25 @@ function App() {
                         value={item.location}
                         onChange={(e) => updateLocation(i, e.target.value)}
                         onBlur={(e) => updateLocation(i, e.target.value)}
+                        onKeyUp={(e) => {
+                          const input = e.target as HTMLInputElement; // 👈 type assertion
+                          setTimeout(() => {
+                            const pos = input.selectionStart ?? 0;
+                            input.setSelectionRange(pos, pos);
+                          }, 0);
+                        }}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                         placeholder="Enter location..."
                       />
                     </td>
-                    <td className="px-6 py-4">
-                      <input
-                        type="text"
-                        value={item.description}
+                    <td>
+                      <textarea
                         onChange={(e) => updateDescription(i, e.target.value)}
-                        onBlur={(e) => updateDescription(i, e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                         placeholder="Enter description..."
-                      />
+                        className="overflow-scroll px-2 border border-gray-300 rounded-md"
+                      >
+                        {item.description}
+                      </textarea>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
@@ -264,9 +270,9 @@ function App() {
           </div>
         </div>
 
-        {/* Span resume */}
+        {/* Pre resume */}
         <div className="bg-black my-4 rounded-2xl p-4">
-          <pre className="bg-black text-white">
+          <pre className="bg-black text-white overflow-scroll">
             {JSON.stringify(list, null, 2)}
           </pre>
         </div>

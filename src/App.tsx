@@ -140,6 +140,9 @@ function App() {
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     Duration
                   </th>
+                  <th>
+                    Text
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -213,6 +216,9 @@ function App() {
                       >
                         {calculateDuration(item.startedAt, item.finishedAt)}
                       </span>
+                    </td>
+                    <td>
+                      <span>{item.description}</span>
                     </td>
                   </tr>
                 ))}

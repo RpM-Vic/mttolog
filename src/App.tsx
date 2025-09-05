@@ -102,7 +102,7 @@ function App() {
           </div>
           <button
             onClick={startNewActivity}
-            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 flex items-center space-x-2"
+            className="bg-gradient-to-r active:scale-85 active:shadow-inner active:from-blue-700 active:to-purple-800 from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 flex items-center space-x-2"
           >
             <span>+</span>
             <span>Start New Activity</span>
@@ -176,7 +176,7 @@ function App() {
                       <textarea
                         onChange={(e) => updateDescription(i, e.target.value)}
                         placeholder="Enter description..."
-                        className="overflow-scroll px-2 border border-gray-300 rounded-md"
+                        className="overflow-scroll px-2 resize-none border border-gray-300 rounded-md"
                       >
                         {item.description}
                       </textarea>
@@ -276,12 +276,6 @@ function App() {
           </div>
         </div>
 
-        {/* Pre resume */}
-        <div className="bg-black my-4 rounded-2xl p-4">
-          <pre className="bg-black text-white overflow-scroll">
-            {JSON.stringify(list, null, 2)}
-          </pre>
-        </div>
       </div>
     </div>
   );
